@@ -20,3 +20,4 @@ MonoBehaviour:
   twoHands: 0
   leftOverride: {fileID: 22100000, guid: 2c0873f8e9b90754c843891d2430cefd, type: 2}
   rightOverride: {fileID: 22100000, guid: 123528bfbf8c6074e9d2a0505b848a26, type: 2}
+  hitRadius: 0.32

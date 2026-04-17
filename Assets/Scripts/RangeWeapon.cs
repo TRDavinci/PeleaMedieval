@@ -42,6 +42,13 @@ public class RangeWeapon : MonoBehaviour, IAttack, IItemData
             
             GameObject arrow = Instantiate(prefabArrow, shootPoint.position, Quaternion.Euler(0, 0, angle));
 
+            Arrow arrowScript = arrow.GetComponent<Arrow>();
+            if (arrowScript != null)
+            {
+                arrowScript.damage = finalDamage;                
+                arrowScript.owner = transform.root.gameObject;
+            }
+
             Rigidbody2D rbArrow = arrow.GetComponent<Rigidbody2D>();
             if (rbArrow != null)
             {
@@ -49,8 +56,7 @@ public class RangeWeapon : MonoBehaviour, IAttack, IItemData
             }
 
             
-            Arrow arrowScript = arrow.GetComponent<Arrow>();
-            if (arrowScript != null) arrowScript.damage = finalDamage;
+           
         }
         
     }

@@ -29,6 +29,13 @@ public class ItemWorld : MonoBehaviour
         spriteRenderer.sprite = data.sprite;
     }
 
+    public void Collect()
+    {
+        
+        // if(Object.HasStateAuthority) Runner.Despawn(Object);
+        Destroy(gameObject);
+    }
+
     public void SetUpDrop(Vector2 direction)
     {
         Rigidbody2D rb = GetComponent<Rigidbody2D>();

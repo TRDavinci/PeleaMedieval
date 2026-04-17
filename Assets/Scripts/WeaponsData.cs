@@ -13,4 +13,7 @@ public class WeaponsData : ScriptableObject
     [Header("Animations")]
     public RuntimeAnimatorController leftOverride;
     public RuntimeAnimatorController rightOverride;
+
+        
+    public float hitRadius = 0.5f;
 }

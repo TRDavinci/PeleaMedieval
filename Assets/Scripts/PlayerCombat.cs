@@ -1,11 +1,22 @@
 using UnityEngine;
+using static UnityEditor.Progress;
 
 public class PlayerCombat : MonoBehaviour
 {
     public HandSlot leftHand;
     public HandSlot rightHand;
+    Health myHealth;
 
     ItemWorld nearItem;
+
+    private void Awake()
+    {
+        myHealth = GetComponent<Health>();
+    }
+    private void Start()
+    {
+        myHealth.OnProcessDamage = DamageReduction;
+    }
 
     private void Update()
     {
@@ -38,7 +49,15 @@ public class PlayerCombat : MonoBehaviour
     void TryPick(ItemWorld item)
     {
         WeaponsData newWeapon = item.weaponData;
-       
+
+        PickWeapon(newWeapon);
+        item.Collect();      
+        
+        nearItem= null;
+    }
+
+    void PickWeapon(WeaponsData newWeapon)
+    {
         if (newWeapon.twoHands)
         {
             if (!leftHand.IsEmpty()) leftHand.Drop();
@@ -73,8 +92,26 @@ public class PlayerCombat : MonoBehaviour
                 rightHand.SetHandVisible(false);
             }
         }
-        Destroy(item.gameObject);
-        nearItem= null;
+        
+    }
+
+    float DamageReduction(float dmg, Vector2 attackerPosition)
+    {
+        if (leftHand.IsBlocking() || rightHand.IsBlocking())
+        {
+            Vector2 dirToAttacker = (attackerPosition - (Vector2)transform.position).normalized;
+            
+            float dot = Vector2.Dot(transform.right, dirToAttacker);
+
+            //Si el dot es mayor a 0, el enemigo está mirando a nosotros (en un cono de 180°)
+            if (dot > 0)
+            {
+                Debug.Log("Bloqueo frontal exitoso");
+                return 0;
+            }            
+        }
+
+        return dmg;
     }
 
     private void OnTriggerEnter2D(Collider2D collision)

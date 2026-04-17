@@ -6,7 +6,7 @@ public class ItemSpawner : MonoBehaviour
 
     private void Start()
     {
-        EventManager.SubscribeToEvent(EventType.OnWeaponDropped, SpawnFromDrop);   
+        //EventManager.SubscribeToEvent(EventType.OnWeaponDropped, SpawnFromDrop);   
     }
 
     private void SpawnFromDrop(params object[] parameters)
@@ -27,5 +27,15 @@ public class ItemSpawner : MonoBehaviour
         GameObject item = Instantiate(itemWorldPrefab, pos, Quaternion.identity);
         item.GetComponent<ItemWorld>().SetWeapon(data);
         return item;
+    }
+
+    private void OnEnable() 
+    {
+        EventManager.SubscribeToEvent(EventType.OnWeaponDropped, SpawnFromDrop);
+    }
+
+    private void OnDisable() 
+    {
+        EventManager.UnsubscribeToEvent(EventType.OnWeaponDropped, SpawnFromDrop);
     }
 }

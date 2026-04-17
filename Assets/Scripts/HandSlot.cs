@@ -6,6 +6,7 @@ public class HandSlot : MonoBehaviour
     GameObject currentWeapon;
     IAttack cachedAttack;
     IItemData cachedItemData;
+    private ShieldWeapon _cachedShield;
     public bool rightHand;
     Animator _anim;
 
@@ -18,15 +19,14 @@ public class HandSlot : MonoBehaviour
         currentWeapon.transform.localRotation = Quaternion.identity;
 
         _anim = currentWeapon.GetComponent<Animator>();
+        cachedAttack = currentWeapon.GetComponent<IAttack>();
+        cachedItemData = currentWeapon.GetComponent<IItemData>();
+        _cachedShield = currentWeapon.GetComponent<ShieldWeapon>();
         if (_anim != null)
         {
             _anim.runtimeAnimatorController = rightHand ? data.rightOverride : data.leftOverride;
-        }
-
-            cachedAttack = currentWeapon.GetComponent<IAttack>();
-        cachedItemData = currentWeapon.GetComponent<IItemData>();
+        }        
         cachedItemData.SetData(data);
-
     }
 
     public void Drop()
@@ -36,6 +36,7 @@ public class HandSlot : MonoBehaviour
         WeaponsData dataToDrop = cachedItemData.GetData();
         EventManager.TriggerEvent(EventType.OnWeaponDropped, dataToDrop, transform.position, (Vector2)transform.right);
         Destroy(currentWeapon);
+        _cachedShield = null;
         currentWeapon = null;
         cachedAttack = null;
         cachedItemData = null;
@@ -53,10 +54,7 @@ public class HandSlot : MonoBehaviour
     }
     public bool IsBlocking()
     {
-        if (IsEmpty()) return false;        
-        var shield = currentWeapon.GetComponent<ShieldWeapon>();
-        if (shield != null) return shield.isBlocking;
-        return false;
+        return _cachedShield != null && _cachedShield.isBlocking;
     }
 
     public void ActionDown()=> cachedAttack?.Attack();
